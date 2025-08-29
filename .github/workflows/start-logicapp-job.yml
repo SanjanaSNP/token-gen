@@ -6,6 +6,7 @@ on:
 jobs:
   run-main:
     runs-on: ubuntu-latest
+    timeout-minutes: 100  # Automatically times out if too long
 
     steps:
       - name: Checkout repo
@@ -19,19 +20,20 @@ jobs:
         with:
           name: token-flag
           path: .token_refresh_enabled
+          retention-days: 1
 
       - name: Trigger Logic App
         run: |
           curl -X POST ${{ secrets.LOGIC_APP_URL }}
 
-      # Simulate a long job (e.g. Logic App or workflow running)
-      - name: Simulated long-running job (90 minutes)
-        run: sleep 5400  # Replace this with your actual logic
+      # Simulate a long-running task
+      - name: Simulated long-running job
+        run: sleep 5400  # Replace with actual job
 
-      - name: Delete flag after job ends
+      - name: Cleanup flag
         run: rm -f .token_refresh_enabled
 
-      - name: Upload dummy file to overwrite flag
+      - name: Overwrite token flag to stop refresh
         uses: actions/upload-artifact@v4
         with:
           name: token-flag
