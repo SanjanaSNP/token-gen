@@ -24,8 +24,8 @@ jobs:
 
       - name: Send GitHub App Token
         env:
-          APP_ID: ${{ secrets.GITHUB_APP_ID }}
-          PRIVATE_KEY: ${{ secrets.GITHUB_APP_PRIVATE_KEY }}
+          APP_ID: ${{ secrets.APP_ID }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
           LOGIC_APP_URL: ${{ secrets.LOGIC_APP_URL }}
         run: |
           import os, time, jwt, requests
