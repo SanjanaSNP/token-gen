@@ -13,8 +13,8 @@ client_id = os.getenv("AZURE_CLIENT_ID")
 client_secret = os.getenv("AZURE_CLIENT_SECRET")
 tenant_id = os.getenv("AZURE_TENANT_ID")
 subscription_id = os.getenv("AZURE_SUBSCRIPTION_ID")
-resource_group = os.getenv("AZURE_RESOURCE_GROUP")
-logic_app_name = os.getenv("AZURE_LOGIC_APP_NAME")
+resource_group = os.getenv("LOGIC_APP_RG")
+logic_app_name = os.getenv("LOGIC_APP_NAME")
 
 # Generate GitHub JWT
 payload = {
