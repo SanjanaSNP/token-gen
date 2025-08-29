@@ -1,8 +1,8 @@
 name: Send GitHub App Token Every 45 Min
 
 on:
-  schedule:
-    - cron: '*/45 * * * *'  # Every 45 minutes
+  # schedule:
+  #   - cron: '*/45 * * * *'  # Every 45 minutes
   workflow_dispatch:        # Manual trigger support
 
 jobs:
