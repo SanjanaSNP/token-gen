@@ -1,0 +1,51 @@
+name: 🔁 Refresh GitHub App Token Every 45 Min
+
+on:
+  schedule:
+    - cron: '*/45 * * * *'  # every 45 minutes UTC
+  workflow_dispatch:        # also allows manual testing
+
+jobs:
+  refresh-token:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download token flag
+        uses: actions/download-artifact@v4
+        with:
+          name: token-flag
+          path: .
+
+      - name: Check if refresh is enabled
+        id: check_flag
+        run: |
+          if [ -f ".token_refresh_enabled" ]; then
+            echo "✅ Token refresh is enabled."
+            echo "enabled=true" >> $GITHUB_OUTPUT
+          else
+            echo "❌ Token refresh disabled."
+            echo "enabled=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Set up Python
+        if: steps.check_flag.outputs.enabled == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        if: steps.check_flag.outputs.enabled == 'true'
+        run: |
+          pip install PyJWT cryptography requests
+
+      - name: Run token generation script
+        if: steps.check_flag.outputs.enabled == 'true'
+        env:
+          APP_ID: ${{ secrets.APP_ID }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          LOGIC_APP_URL: ${{ secrets.LOGIC_APP_URL }}
+        run: |
+          python send_jwt.py
