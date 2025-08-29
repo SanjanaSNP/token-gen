@@ -1,0 +1,37 @@
+name: 🔁 Update Logic App GitHub Token
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: '*/45 * * * *'
+
+jobs:
+  update-logicapp-token:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyJWT cryptography requests azure-identity
+
+      - name: Generate GitHub App Token and Update Logic App
+        env:
+          APP_ID: ${{ secrets.APP_ID }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          AZURE_RESOURCE_GROUP: ${{ secrets.AZURE_RESOURCE_GROUP }}
+          AZURE_LOGIC_APP_NAME: ${{ secrets.AZURE_LOGIC_APP_NAME }}
+        run: |
+          python update_logic_app_token.py
