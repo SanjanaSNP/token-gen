@@ -1,0 +1,38 @@
+name: 🟢 Start Logic App Job
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-main:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Create token refresh flag
+        run: echo "true" > .token_refresh_enabled
+
+      - name: Upload flag artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: token-flag
+          path: .token_refresh_enabled
+
+      - name: Trigger Logic App
+        run: |
+          curl -X POST ${{ secrets.LOGIC_APP_URL }}
+
+      # Simulate a long job (e.g. Logic App or workflow running)
+      - name: Simulated long-running job (90 minutes)
+        run: sleep 5400  # Replace this with your actual logic
+
+      - name: Delete flag after job ends
+        run: rm -f .token_refresh_enabled
+
+      - name: Upload dummy file to overwrite flag
+        uses: actions/upload-artifact@v4
+        with:
+          name: token-flag
+          path: .github/empty.txt
